@@ -1,4 +1,6 @@
 import json
+from typing import Dict, Any
+
 from _pytest.pathlib import Path
 
 import pytest
@@ -43,7 +45,12 @@ class ReportLogPlugin:
             self._file = None
 
     def _write_json_data(self, data):
-        self._file.write(json.dumps(data) + "\n")
+        try:
+            json_data = json.dumps(data)
+        except TypeError:
+            data = cleanup_unserializable(data)
+            json_data = json.dumps(data)
+        self._file.write(json_data + "\n")
         self._file.flush()
 
     def pytest_sessionstart(self):
@@ -70,3 +77,15 @@ class ReportLogPlugin:
         terminalreporter.write_sep(
             "-", "generated report log file: {}".format(self._log_path)
         )
+
+
+def cleanup_unserializable(d: Dict[str, Any]) -> Dict[str, Any]:
+    """Return new dict with entries that are not json serializable by their str()."""
+    result = {}
+    for k, v in d.items():
+        try:
+            json.dumps({k: v})
+        except TypeError:
+            v = str(v)
+        result[k] = v
+    return result
