@@ -3,6 +3,8 @@ import json
 import pytest
 from _pytest.reports import BaseReport
 
+from pytest_reportlog.plugin import cleanup_unserializable
+
 
 def test_basics(testdir, tmp_path, pytestconfig):
     """Basic testing of the report log functionality.
@@ -52,3 +54,41 @@ def test_basics(testdir, tmp_path, pytestconfig):
             config=pytestconfig, data=json_obj
         )
         assert isinstance(rep, BaseReport)
+
+
+def test_xdist_integration(testdir, tmp_path):
+    pytest.importorskip("xdist")
+    testdir.makepyfile(
+        """
+        def test_ok():
+            pass
+
+        def test_fail():
+            assert 0
+    """
+    )
+    fn = tmp_path / "result.log"
+    result = testdir.runpytest("-n2", "--report-log={}".format(fn))
+    result.stdout.fnmatch_lines("*1 failed, 1 passed*")
+
+    lines = fn.read_text("UTF-8").splitlines()
+    data = json.loads(lines[0])
+    assert data == {
+        "pytest_version": pytest.__version__,
+        "$report_type": "SessionStart",
+    }
+
+
+def test_cleanup_unserializable():
+    """Unittest for the cleanup_unserializable function"""
+    good = {"x": 1, "y": ["a", "b"]}
+    new = cleanup_unserializable(good)
+    assert new == good
+
+    class C:
+        def __str__(self):
+            return "C instance"
+
+    bad = {"x": 1, "y": ["a", "b"], "c": C()}
+    new = cleanup_unserializable(bad)
+    assert new == {"x": 1, "c": "C instance", "y": ["a", "b"]}
