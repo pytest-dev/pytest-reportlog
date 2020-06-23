@@ -17,13 +17,6 @@ def pytest_addoption(parser):
     )
 
 
-@pytest.fixture(scope="function")
-def report_log(record_property):
-    report_log_extra = {}
-    record_property("report_log_extra", report_log_extra)
-    return report_log_extra
-
-
 def pytest_configure(config):
     report_log = config.option.report_log
     if report_log and not hasattr(config, "slaveinput"):
@@ -72,6 +65,11 @@ class ReportLogPlugin:
         data = self._config.hook.pytest_report_to_serializable(
             config=self._config, report=report
         )
+        if "user_properties" in data:
+            user_properties = {k: v for k, v in data.get("user_properties", [])}
+            if user_properties:
+                data.update(user_properties)
+            del data["user_properties"]
         self._write_json_data(data)
 
     def pytest_collectreport(self, report):
