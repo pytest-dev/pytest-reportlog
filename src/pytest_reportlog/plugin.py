@@ -66,7 +66,7 @@ class ReportLogPlugin:
             config=self._config, report=report
         )
         if "user_properties" in data:
-            user_properties = {k: v for k, v in data.get("user_properties", [])}
+            user_properties = dict(data["user_properties"])
             if user_properties:
                 data.update(user_properties)
             del data["user_properties"]
