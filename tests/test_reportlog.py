@@ -92,3 +92,23 @@ def test_cleanup_unserializable():
     bad = {"x": 1, "y": ["a", "b"], "c": C()}
     new = cleanup_unserializable(bad)
     assert new == {"x": 1, "c": "C instance", "y": ["a", "b"]}
+
+
+def test_metadata_modification(testdir, tmp_path):
+    testdir.makepyfile(
+        """
+        def test_fixture_report_log(report_log):
+            report_log["new_data_success"] = "new data success"
+        """
+    )
+    log_file = tmp_path / "log.json"
+    testdir.runpytest("--report-log={}".format(log_file))
+    lines = log_file.read_text("UTF-8").splitlines()
+    data = json.loads(lines[4])
+    assert data["user_properties"] == [
+        ["report_log_extra", {"new_data_success": "new data success"}]
+    ]
+    data = json.loads(lines[5])
+    assert data["user_properties"] == [
+        ["report_log_extra", {"new_data_success": "new data success"}]
+    ]

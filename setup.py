@@ -22,7 +22,7 @@ setup(
     description="Replacement for the --resultlog option, focused in simplicity and extensibility",
     long_description=readme,
     keywords="pytest",
-    extras_require={"dev": ["pre-commit", "tox"]},
+    extras_require={"dev": ["pre-commit", "tox"], "testing": ["pytest-xdist"]},
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Framework :: Pytest",
