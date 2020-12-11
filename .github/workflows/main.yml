@@ -57,6 +57,7 @@ jobs:
         tox -e linting
 
   deploy:
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') && github.repository == 'pytest-dev/pytest-reportlog'
 
     runs-on: ubuntu-latest
 
