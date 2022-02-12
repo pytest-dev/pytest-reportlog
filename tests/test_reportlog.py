@@ -79,6 +79,160 @@ def test_xdist_integration(testdir, tmp_path):
     }
 
 
+def test_report_srl_failed(testdir, tmp_path, pytestconfig):
+    testdir.makepyfile(
+        """
+        def test_ok():
+            pass
+
+        def test_fail():
+            assert 0
+    """
+    )
+
+    log_file = tmp_path / "log.json"
+
+    result = testdir.runpytest("--report-log", str(log_file), "--srl", "failed")
+    assert result.ret == pytest.ExitCode.TESTS_FAILED
+    result.stdout.fnmatch_lines(["* generated report log file: {}*".format(log_file)])
+    json_objs = json.loads(log_file.read_text())
+    only_failed_test = json_objs[1]
+    assert only_failed_test.keys() == {"outcome", "location", "message"}
+    assert only_failed_test.get("outcome") == "failed"
+    assert only_failed_test.get("message") == "assert 0"
+
+
+def test_report_summary_report_level_failed(testdir, tmp_path, pytestconfig):
+    testdir.makepyfile(
+        """
+        def test_ok():
+            pass
+
+        def test_fail():
+            assert 0
+    """
+    )
+
+    log_file = tmp_path / "log.json"
+
+    result = testdir.runpytest("--report-log", str(log_file), "--summary-report-level", "failed")
+    assert result.ret == pytest.ExitCode.TESTS_FAILED
+    result.stdout.fnmatch_lines(["* generated report log file: {}*".format(log_file)])
+    json_objs = json.loads(log_file.read_text())
+    only_failed_test = json_objs[1]
+    assert only_failed_test.keys() == {"outcome", "location", "message"}
+    assert only_failed_test.get("outcome") == "failed"
+    assert only_failed_test.get("message") == "assert 0"
+
+
+def test_report_srl_passed(testdir, tmp_path, pytestconfig):
+    testdir.makepyfile(
+        """
+        def test_ok():
+            pass
+
+        def test_fail():
+            assert 0
+    """
+    )
+
+    log_file = tmp_path / "log.json"
+
+    result = testdir.runpytest("--report-log", str(log_file), "--srl", "passed")
+    assert result.ret == pytest.ExitCode.TESTS_FAILED
+    result.stdout.fnmatch_lines(["* generated report log file: {}*".format(log_file)])
+    json_objs = json.loads(log_file.read_text())
+    for obj in json_objs:
+        if obj.get("outcome") == "passed":
+            assert obj.keys() == {"outcome", "location"}
+        elif obj.get("outcome") == "failed":
+            assert obj.keys() == {"outcome", "location", "message"}
+
+
+def test_report_srl_skipped(testdir, tmp_path, pytestconfig):
+    testdir.makepyfile(
+        """
+        import sys
+        import pytest
+        def test_ok():
+            pass
+        
+        def test_skip():
+            if not sys.platform.startswith("win"):
+                pytest.skip("skipping windows-only tests", allow_module_level=True)
+
+        def test_fail():
+            assert 0
+    """
+    )
+
+    log_file = tmp_path / "log.json"
+
+    result = testdir.runpytest("--report-log", str(log_file), "--srl", "skipped")
+    assert result.ret == pytest.ExitCode.TESTS_FAILED
+    result.stdout.fnmatch_lines(["* generated report log file: {}*".format(log_file)])
+    json_objs = json.loads(log_file.read_text())
+    for obj in json_objs:
+        if obj.get("outcome") == "skipped":
+            assert obj.keys() == {"outcome", "location"}
+        elif obj.get("outcome") == "failed":
+            assert obj.keys() == {"outcome", "location", "message"}
+
+
+def test_report_summary_report_level_skipped(testdir, tmp_path, pytestconfig):
+    testdir.makepyfile(
+        """
+        import sys
+        import pytest
+        def test_ok():
+            pass
+
+        def test_skip():
+            if not sys.platform.startswith("win"):
+                pytest.skip("skipping windows-only tests", allow_module_level=True)
+
+        def test_fail():
+            assert 0
+    """
+    )
+
+    log_file = tmp_path / "log.json"
+
+    result = testdir.runpytest("--report-log", str(log_file), "--summary-report-level", "skipped")
+    assert result.ret == pytest.ExitCode.TESTS_FAILED
+    result.stdout.fnmatch_lines(["* generated report log file: {}*".format(log_file)])
+    json_objs = json.loads(log_file.read_text())
+    for obj in json_objs:
+        if obj.get("outcome") == "skipped":
+            assert obj.keys() == {"outcome", "location"}
+        elif obj.get("outcome") == "failed":
+            assert obj.keys() == {"outcome", "location", "message"}
+
+
+def test_report_summary_report_level_passed(testdir, tmp_path, pytestconfig):
+    testdir.makepyfile(
+        """
+        def test_ok():
+            pass
+
+        def test_fail():
+            assert 0
+    """
+    )
+
+    log_file = tmp_path / "log.json"
+
+    result = testdir.runpytest("--report-log", str(log_file), "--summary-report-level", "passed")
+    assert result.ret == pytest.ExitCode.TESTS_FAILED
+    result.stdout.fnmatch_lines(["* generated report log file: {}*".format(log_file)])
+    json_objs = json.loads(log_file.read_text())
+    for obj in json_objs:
+        if obj.get('outcome') == 'passed':
+            assert obj.keys() == {"outcome", "location"}
+        elif obj.get('outcome') == 'failed':
+            assert obj.keys() == {"outcome", "location", "message"}
+
+
 def test_cleanup_unserializable():
     """Unittest for the cleanup_unserializable function"""
     good = {"x": 1, "y": ["a", "b"]}
