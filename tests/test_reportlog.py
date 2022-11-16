@@ -14,12 +14,17 @@ def test_basics(testdir, tmp_path, pytestconfig):
     """
     testdir.makepyfile(
         """
+        import warnings
+
         def test_ok():
             pass
 
         def test_fail():
             assert 0
-    """
+
+        def test_warning():
+            warnings.warn("message", UserWarning)
+        """
     )
 
     log_file = tmp_path / "log.json"
@@ -29,7 +34,7 @@ def test_basics(testdir, tmp_path, pytestconfig):
     result.stdout.fnmatch_lines(["* generated report log file: {}*".format(log_file)])
 
     json_objs = [json.loads(x) for x in log_file.read_text().splitlines()]
-    assert len(json_objs) == 10
+    assert len(json_objs) == 14
 
     # first line should be the session_start
     session_start = json_objs[0]
@@ -43,6 +48,14 @@ def test_basics(testdir, tmp_path, pytestconfig):
     assert session_start == {
         "exitstatus": pytest.ExitCode.TESTS_FAILED,
         "$report_type": "SessionFinish",
+    }
+
+    warning = json_objs.pop(12)
+    assert warning == {
+        "$report_type": "warning-recorded",
+        "category": "UserWarning",
+        "when": "runtest",
+        "message": "message",
     }
 
     # rest of the json objects should be unserialized into report objects; we don't test
@@ -60,16 +73,21 @@ def test_xdist_integration(testdir, tmp_path):
     pytest.importorskip("xdist")
     testdir.makepyfile(
         """
+        import warnings
+
         def test_ok():
             pass
 
         def test_fail():
             assert 0
-    """
+
+        def test_warning():
+            warnings.warn("message", UserWarning)
+        """
     )
     fn = tmp_path / "result.log"
     result = testdir.runpytest("-n2", "--report-log={}".format(fn))
-    result.stdout.fnmatch_lines("*1 failed, 1 passed*")
+    result.stdout.fnmatch_lines("*1 failed, 2 passed, 1 warning*")
 
     lines = fn.read_text("UTF-8").splitlines()
     data = json.loads(lines[0])
