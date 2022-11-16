@@ -70,7 +70,7 @@ class ReportLogPlugin:
     def pytest_warning_recorded(self, warning_message, when, nodeid, location):
         data = vars(warning_message)
         extra_data = {
-            "$report_type": "WarningReport",
+            "$report_type": "warning-recorded",
             "when": when,
             "location": location,
         }
