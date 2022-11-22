@@ -50,13 +50,15 @@ def test_basics(testdir, tmp_path, pytestconfig):
         "$report_type": "SessionFinish",
     }
 
-    warning = json_objs.pop(12)
+    [warning] = [obj for obj in json_objs if obj["$report_type"] == "warning-recorded"]
     assert warning == {
         "$report_type": "warning-recorded",
         "category": "UserWarning",
         "when": "runtest",
         "message": "message",
     }
+
+    json_objs = [obj for obj in json_objs if obj["$report_type"] != "warning-recorded"]
 
     # rest of the json objects should be unserialized into report objects; we don't test
     # the actual report object extensively because it has been tested in ``test_reports``
