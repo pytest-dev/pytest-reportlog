@@ -1,4 +1,5 @@
 import json
+import logging
 from typing import Dict, Any
 
 from _pytest.pathlib import Path
@@ -77,6 +78,15 @@ class ReportLogPlugin:
         terminalreporter.write_sep(
             "-", "generated report log file: {}".format(self._log_path)
         )
+
+    @pytest.hookimpl(hookwrapper=True)
+    def pytest_runtest_makereport(self, item, call):
+        outcome = yield
+
+        if not outcome.excinfo:
+            res = outcome.get_result()
+            res.start = call.start
+            res.stop = call.stop
 
 
 def cleanup_unserializable(d: Dict[str, Any]) -> Dict[str, Any]:

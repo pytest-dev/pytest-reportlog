@@ -1,7 +1,7 @@
 import json
 
 import pytest
-from _pytest.reports import BaseReport
+from _pytest.reports import BaseReport, TestReport
 
 from pytest_reportlog.plugin import cleanup_unserializable
 
@@ -47,13 +47,16 @@ def test_basics(testdir, tmp_path, pytestconfig):
 
     # rest of the json objects should be unserialized into report objects; we don't test
     # the actual report object extensively because it has been tested in ``test_reports``
-    # already.
+    # already (except start and stop attributes which are set by this plugin).
     pm = pytestconfig.pluginmanager
     for json_obj in json_objs[1:-1]:
         rep = pm.hook.pytest_report_from_serializable(
             config=pytestconfig, data=json_obj
         )
         assert isinstance(rep, BaseReport)
+        if isinstance(rep, TestReport):
+            assert hasattr(rep, "start")
+            assert hasattr(rep, "stop")
 
 
 def test_xdist_integration(testdir, tmp_path):
