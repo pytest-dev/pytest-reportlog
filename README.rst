@@ -63,33 +63,37 @@ Consider this file:
 ::
 
     $ pytest test_report_example.py -q --report-log=log.json
-    .F                                                                   [100%]
-    ================================= FAILURES =================================
-    ________________________________ test_fail _________________________________
+    .F                                                                 [100%]
+    ================================ FAILURES ================================
+    _______________________________ test_fail ________________________________
 
         def test_fail():
     >       assert 4 + 4 == 1
     E       assert (4 + 4) == 1
 
-    test_report_example.py:8: AssertionError
-    ------------------- generated report log file: log.json --------------------
-    1 failed, 1 passed in 0.12s
+    test_report_example.py:6: AssertionError
+    ------------------ generated report log file: log.json -------------------
+    ======================== short test summary info =========================
+    FAILED test_report_example.py::test_fail - assert (4 + 4) == 1
+    1 failed, 1 passed in 0.01s
+
 
 The generated ``log.json`` will contain a JSON object per line:
 
 ::
 
     $ cat log.json
-    {"pytest_version": "5.2.2", "$report_type": "SessionStart"}
+    {"pytest_version": "7.2.1", "$report_type": "SessionStart"}
     {"nodeid": "", "outcome": "passed", "longrepr": null, "result": null, "sections": [], "$report_type": "CollectReport"}
     {"nodeid": "test_report_example.py", "outcome": "passed", "longrepr": null, "result": null, "sections": [], "$report_type": "CollectReport"}
-    {"nodeid": "test_report_example.py::test_ok", "location": ["test_report_example.py", 0, "test_ok"], "keywords": {"test_ok": 1, "pytest-reportlog": 1, "test_report_example.py": 1}, "outcome": "passed", "longrepr": null, "when": "setup", "user_properties": [], "sections": [], "duration": 0.0, "$report_type": "TestReport"}
-    {"nodeid": "test_report_example.py::test_ok", "location": ["test_report_example.py", 0, "test_ok"], "keywords": {"test_ok": 1, "pytest-reportlog": 1, "test_report_example.py": 1}, "outcome": "passed", "longrepr": null, "when": "call", "user_properties": [], "sections": [], "duration": 0.0, "$report_type": "TestReport"}
-    {"nodeid": "test_report_example.py::test_ok", "location": ["test_report_example.py", 0, "test_ok"], "keywords": {"test_ok": 1, "pytest-reportlog": 1, "test_report_example.py": 1}, "outcome": "passed", "longrepr": null, "when": "teardown", "user_properties": [], "sections": [], "duration": 0.00099945068359375, "$report_type": "TestReport"}
-    {"nodeid": "test_report_example.py::test_fail", "location": ["test_report_example.py", 4, "test_fail"], "keywords": {"test_fail": 1, "pytest-reportlog": 1, "test_report_example.py": 1}, "outcome": "passed", "longrepr": null, "when": "setup", "user_properties": [], "sections": [], "duration": 0.0, "$report_type": "TestReport"}
-    {"nodeid": "test_report_example.py::test_fail", "location": ["test_report_example.py", 4, "test_fail"], "keywords": {"test_fail": 1, "pytest-reportlog": 1, "test_report_example.py": 1}, "outcome": "failed", "longrepr": {"reprcrash": {"path": "D:\\projects\\pytest-reportlog\\test_report_example.py", "lineno": 6, "message": "assert (4 + 4) == 1"}, "reprtraceback": {"reprentries": [{"type": "ReprEntry", "data": {"lines": ["    def test_fail():", ">       assert 4 + 4 == 1", "E       assert (4 + 4) == 1"], "reprfuncargs": {"args": []}, "reprlocals": null, "reprfileloc": {"path": "test_report_example.py", "lineno": 6, "message": "AssertionError"}, "style": "long"}}], "extraline": null, "style": "long"}, "sections": [], "chain": [[{"reprentries": [{"type": "ReprEntry", "data": {"lines": ["    def test_fail():", ">       assert 4 + 4 == 1", "E       assert (4 + 4) == 1"], "reprfuncargs": {"args": []}, "reprlocals": null, "reprfileloc": {"path": "test_report_example.py", "lineno": 6, "message": "AssertionError"}, "style": "long"}}], "extraline": null, "style": "long"}, {"path": "D:\\projects\\pytest-reportlog\\test_report_example.py", "lineno": 6, "message": "assert (4 + 4) == 1"}, null]]}, "when": "call", "user_properties": [], "sections": [], "duration": 0.0009992122650146484, "$report_type": "TestReport"}
-    {"nodeid": "test_report_example.py::test_fail", "location": ["test_report_example.py", 4, "test_fail"], "keywords": {"test_fail": 1, "pytest-reportlog": 1, "test_report_example.py": 1}, "outcome": "passed", "longrepr": null, "when": "teardown", "user_properties": [], "sections": [], "duration": 0.0, "$report_type": "TestReport"}
+    {"nodeid": "test_report_example.py::test_ok", "location": ["test_report_example.py", 0, "test_ok"], "keywords": {"test_ok": 1, "test_report_example.py": 1, "pytest-reportlog": 1}, "outcome": "passed", "longrepr": null, "when": "setup", "user_properties": [], "sections": [], "duration": 9.839799895416945e-05, "start": 1674651583.6440034, "stop": 1674651583.6441023, "$report_type": "TestReport"}
+    {"nodeid": "test_report_example.py::test_ok", "location": ["test_report_example.py", 0, "test_ok"], "keywords": {"test_ok": 1, "test_report_example.py": 1, "pytest-reportlog": 1}, "outcome": "passed", "longrepr": null, "when": "call", "user_properties": [], "sections": [], "duration": 8.005800191313028e-05, "start": 1674651583.6442027, "stop": 1674651583.644283, "$report_type": "TestReport"}
+    {"nodeid": "test_report_example.py::test_ok", "location": ["test_report_example.py", 0, "test_ok"], "keywords": {"test_ok": 1, "test_report_example.py": 1, "pytest-reportlog": 1}, "outcome": "passed", "longrepr": null, "when": "teardown", "user_properties": [], "sections": [], "duration": 6.103400301071815e-05, "start": 1674651583.644366, "stop": 1674651583.6444275, "$report_type": "TestReport"}
+    {"nodeid": "test_report_example.py::test_fail", "location": ["test_report_example.py", 4, "test_fail"], "keywords": {"test_fail": 1, "test_report_example.py": 1, "pytest-reportlog": 1}, "outcome": "passed", "longrepr": null, "when": "setup", "user_properties": [], "sections": [], "duration": 6.432399823097512e-05, "start": 1674651583.6445801, "stop": 1674651583.644645, "$report_type": "TestReport"}
+    {"nodeid": "test_report_example.py::test_fail", "location": ["test_report_example.py", 4, "test_fail"], "keywords": {"test_fail": 1, "test_report_example.py": 1, "pytest-reportlog": 1}, "outcome": "failed", "longrepr": {"reprcrash": {"path": "/home/rafal/sources/misc/pytest-reportlog/test_report_example.py", "lineno": 6, "message": "assert (4 + 4) == 1"}, "reprtraceback": {"reprentries": [{"type": "ReprEntry", "data": {"lines": ["    def test_fail():", ">       assert 4 + 4 == 1", "E       assert (4 + 4) == 1"], "reprfuncargs": {"args": []}, "reprlocals": null, "reprfileloc": {"path": "test_report_example.py", "lineno": 6, "message": "AssertionError"}, "style": "long"}}], "extraline": null, "style": "long"}, "sections": [], "chain": [[{"reprentries": [{"type": "ReprEntry", "data": {"lines": ["    def test_fail():", ">       assert 4 + 4 == 1", "E       assert (4 + 4) == 1"], "reprfuncargs": {"args": []}, "reprlocals": null, "reprfileloc": {"path": "test_report_example.py", "lineno": 6, "message": "AssertionError"}, "style": "long"}}], "extraline": null, "style": "long"}, {"path": "/home/rafal/sources/misc/pytest-reportlog/test_report_example.py", "lineno": 6, "message": "assert (4 + 4) == 1"}, null]]}, "when": "call", "user_properties": [], "sections": [], "duration": 0.00014615400141337886, "start": 1674651583.6447048, "stop": 1674651583.6448512, "$report_type": "TestReport"}
+    {"nodeid": "test_report_example.py::test_fail", "location": ["test_report_example.py", 4, "test_fail"], "keywords": {"test_fail": 1, "test_report_example.py": 1, "pytest-reportlog": 1}, "outcome": "passed", "longrepr": null, "when": "teardown", "user_properties": [], "sections": [], "duration": 9.126199802267365e-05, "start": 1674651583.6515481, "stop": 1674651583.6516397, "$report_type": "TestReport"}
     {"exitstatus": 1, "$report_type": "SessionFinish"}
+
 
 License
 =======
