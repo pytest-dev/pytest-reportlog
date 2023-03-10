@@ -30,6 +30,8 @@ Replacement for the ``--resultlog`` option, focused in simplicity and extensibil
 Usage
 =====
 
+Install ``pytest-reportlog`` as a test requirement in your test environment.
+
 The ``--report-log=FILE`` option writes *report logs* into a file as the test session executes.
 
 Each line of the report log contains a self contained JSON object corresponding to a testing event,
