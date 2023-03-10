@@ -91,6 +91,28 @@ The generated ``log.json`` will contain a JSON object per line:
     {"nodeid": "test_report_example.py::test_fail", "location": ["test_report_example.py", 4, "test_fail"], "keywords": {"test_fail": 1, "pytest-reportlog": 1, "test_report_example.py": 1}, "outcome": "passed", "longrepr": null, "when": "teardown", "user_properties": [], "sections": [], "duration": 0.0, "$report_type": "TestReport"}
     {"exitstatus": 1, "$report_type": "SessionFinish"}
 
+
+record_property
+---------------
+
+The ``record_property`` fixture allows to log additional information for a test, just like with JUnitXML format.
+Consider this test file:
+
+.. code-block:: python
+
+    def test_function(record_property):
+        record_property("price", 12.34)
+        record_property("fruit", "banana")
+        assert True
+
+This information will be recorded in the report JSON objects under the ``user_properties`` key as follows::
+
+    ..., "user_properties": [["price", 12.34], ["fruit", "banana"]], ...
+
+Note that this nested list construct is just the JSON representation
+of a list of tuples (name-value pairs).
+
+
 License
 =======
 
