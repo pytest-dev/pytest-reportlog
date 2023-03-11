@@ -1,5 +1,5 @@
-UNRELEASED
-----------
+0.2.0 (2023-03-11)
+------------------
 
 * Added support for Python 3.10 and 3.11.
 * Dropped support for Python 3.5 and 3.6.
