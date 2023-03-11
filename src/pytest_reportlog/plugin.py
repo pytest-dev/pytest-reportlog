@@ -74,9 +74,7 @@ class ReportLogPlugin:
         self._write_json_data(data)
 
     def pytest_terminal_summary(self, terminalreporter):
-        terminalreporter.write_sep(
-            "-", "generated report log file: {}".format(self._log_path)
-        )
+        terminalreporter.write_sep("-", f"generated report log file: {self._log_path}")
 
 
 def cleanup_unserializable(d: Dict[str, Any]) -> Dict[str, Any]:

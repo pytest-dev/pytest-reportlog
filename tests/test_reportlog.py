@@ -26,7 +26,7 @@ def test_basics(testdir, tmp_path, pytestconfig):
 
     result = testdir.runpytest("--report-log", str(log_file))
     assert result.ret == pytest.ExitCode.TESTS_FAILED
-    result.stdout.fnmatch_lines(["* generated report log file: {}*".format(log_file)])
+    result.stdout.fnmatch_lines([f"* generated report log file: {log_file}*"])
 
     json_objs = [json.loads(x) for x in log_file.read_text().splitlines()]
     assert len(json_objs) == 10
@@ -68,7 +68,7 @@ def test_xdist_integration(testdir, tmp_path):
     """
     )
     fn = tmp_path / "result.log"
-    result = testdir.runpytest("-n2", "--report-log={}".format(fn))
+    result = testdir.runpytest("-n2", f"--report-log={fn}")
     result.stdout.fnmatch_lines("*1 failed, 1 passed*")
 
     lines = fn.read_text("UTF-8").splitlines()
