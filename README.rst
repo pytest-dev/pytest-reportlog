@@ -10,7 +10,7 @@ pytest-reportlog
 .. |anaconda| image:: https://img.shields.io/conda/vn/conda-forge/pytest-reportlog.svg
     :target: https://anaconda.org/conda-forge/pytest-reportlog
 
-.. |ci| image:: https://github.com/pytest-dev/pytest-reportlog/workflows/build/badge.svg
+.. |ci| image:: https://github.com/pytest-dev/pytest-reportlog/workflows/test/badge.svg
   :target: https://github.com/pytest-dev/pytest-reportlog/actions
 
 .. |python| image:: https://img.shields.io/pypi/pyversions/pytest-reportlog.svg
