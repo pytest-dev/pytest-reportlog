@@ -21,6 +21,7 @@ setup(
     author_email="nicoddemus@gmail.com",
     description="Replacement for the --resultlog option, focused in simplicity and extensibility",
     long_description=readme,
+    long_description_content_type="text/x-rst",
     keywords="pytest",
     extras_require={"dev": ["pre-commit", "tox"]},
     classifiers=[
