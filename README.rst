@@ -10,7 +10,7 @@ pytest-reportlog
 .. |anaconda| image:: https://img.shields.io/conda/vn/conda-forge/pytest-reportlog.svg
     :target: https://anaconda.org/conda-forge/pytest-reportlog
 
-.. |ci| image:: https://github.com/pytest-dev/pytest-reportlog/workflows/build/badge.svg
+.. |ci| image:: https://github.com/pytest-dev/pytest-reportlog/workflows/test/badge.svg
   :target: https://github.com/pytest-dev/pytest-reportlog/actions
 
 .. |python| image:: https://img.shields.io/pypi/pyversions/pytest-reportlog.svg
@@ -29,6 +29,8 @@ Replacement for the ``--resultlog`` option, focused in simplicity and extensibil
 
 Usage
 =====
+
+Install ``pytest-reportlog`` as a test requirement in your test environment.
 
 The ``--report-log=FILE`` option writes *report logs* into a file as the test session executes.
 
@@ -90,6 +92,28 @@ The generated ``log.json`` will contain a JSON object per line:
     {"nodeid": "test_report_example.py::test_fail", "location": ["test_report_example.py", 4, "test_fail"], "keywords": {"test_fail": 1, "pytest-reportlog": 1, "test_report_example.py": 1}, "outcome": "failed", "longrepr": {"reprcrash": {"path": "D:\\projects\\pytest-reportlog\\test_report_example.py", "lineno": 6, "message": "assert (4 + 4) == 1"}, "reprtraceback": {"reprentries": [{"type": "ReprEntry", "data": {"lines": ["    def test_fail():", ">       assert 4 + 4 == 1", "E       assert (4 + 4) == 1"], "reprfuncargs": {"args": []}, "reprlocals": null, "reprfileloc": {"path": "test_report_example.py", "lineno": 6, "message": "AssertionError"}, "style": "long"}}], "extraline": null, "style": "long"}, "sections": [], "chain": [[{"reprentries": [{"type": "ReprEntry", "data": {"lines": ["    def test_fail():", ">       assert 4 + 4 == 1", "E       assert (4 + 4) == 1"], "reprfuncargs": {"args": []}, "reprlocals": null, "reprfileloc": {"path": "test_report_example.py", "lineno": 6, "message": "AssertionError"}, "style": "long"}}], "extraline": null, "style": "long"}, {"path": "D:\\projects\\pytest-reportlog\\test_report_example.py", "lineno": 6, "message": "assert (4 + 4) == 1"}, null]]}, "when": "call", "user_properties": [], "sections": [], "duration": 0.0009992122650146484, "$report_type": "TestReport"}
     {"nodeid": "test_report_example.py::test_fail", "location": ["test_report_example.py", 4, "test_fail"], "keywords": {"test_fail": 1, "pytest-reportlog": 1, "test_report_example.py": 1}, "outcome": "passed", "longrepr": null, "when": "teardown", "user_properties": [], "sections": [], "duration": 0.0, "$report_type": "TestReport"}
     {"exitstatus": 1, "$report_type": "SessionFinish"}
+
+
+record_property
+---------------
+
+The ``record_property`` fixture allows to log additional information for a test, just like with JUnitXML format.
+Consider this test file:
+
+.. code-block:: python
+
+    def test_function(record_property):
+        record_property("price", 12.34)
+        record_property("fruit", "banana")
+        assert True
+
+This information will be recorded in the report JSON objects under the ``user_properties`` key as follows::
+
+    ..., "user_properties": [["price", 12.34], ["fruit", "banana"]], ...
+
+Note that this nested list construct is just the JSON representation
+of a list of tuples (name-value pairs).
+
 
 License
 =======
