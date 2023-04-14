@@ -62,6 +62,9 @@ def test_basics(testdir, tmp_path, pytestconfig):
         "category": "UserWarning",
         "when": "runtest",
         "message": "message",
+        "lineno": 10,
+        "location": None,
+        "filename": None,
     }
 
     # rest of the json objects should be unserialized into report objects; we don't test

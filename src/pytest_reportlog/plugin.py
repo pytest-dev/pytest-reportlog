@@ -68,7 +68,12 @@ class ReportLogPlugin:
         self._write_json_data(data)
 
     def pytest_warning_recorded(self, warning_message, when, nodeid, location):
-        data = vars(warning_message)
+        data = {
+            "category": warning_message.category.__name__,
+            "filename": warning_message.filename,
+            "lineno": warning_message.lineno,
+            "message": warning_message.message,
+        }
         extra_data = {
             "$report_type": "warning-recorded",
             "when": when,
