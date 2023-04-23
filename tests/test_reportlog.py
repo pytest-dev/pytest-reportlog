@@ -13,7 +13,7 @@ def test_basics(testdir, tmp_path, pytestconfig):
     We don't test the test reports extensively because they have been
     tested already in ``test_reports``.
     """
-    testdir.makepyfile(
+    p = testdir.makepyfile(
         """
         import warnings
 
@@ -64,7 +64,7 @@ def test_basics(testdir, tmp_path, pytestconfig):
         "message": "message",
         "lineno": 10,
         "location": None,
-        "filename": None,
+        "filename": str(p),
     }
 
     # rest of the json objects should be unserialized into report objects; we don't test
