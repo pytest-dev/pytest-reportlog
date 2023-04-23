@@ -63,7 +63,7 @@ def test_basics(testdir, tmp_path, pytestconfig):
         "when": "runtest",
         "message": "message",
         "lineno": 10,
-        "location": None,
+        "location": None,  # seems to be hard-coded to None
         "filename": str(p),
     }
 
