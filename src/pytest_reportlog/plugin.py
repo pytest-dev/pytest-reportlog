@@ -69,7 +69,9 @@ class ReportLogPlugin:
 
     def pytest_warning_recorded(self, warning_message, when, nodeid, location):
         data = {
-            "category": warning_message.category.__name__,
+            "category": (
+                warning_message.category.__name__ if warning_message.category else None
+            ),
             "filename": warning_message.filename,
             "lineno": warning_message.lineno,
             "message": warning_message.message,
