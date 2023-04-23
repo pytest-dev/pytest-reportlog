@@ -75,7 +75,7 @@ class ReportLogPlugin:
             "message": warning_message.message,
         }
         extra_data = {
-            "$report_type": "warning-recorded",
+            "$report_type": "WarningMessage",
             "when": when,
             "location": location,
         }

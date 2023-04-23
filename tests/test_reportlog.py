@@ -53,12 +53,12 @@ def test_basics(testdir, tmp_path, pytestconfig):
 
     split = defaultdict(list)
     for obj in json_objs:
-        split[obj["$report_type"] == "warning-recorded"].append(obj)
+        split[obj["$report_type"] == "WarningMessage"].append(obj)
     [warning] = split[True]
     json_objs = split[False]
 
     assert warning == {
-        "$report_type": "warning-recorded",
+        "$report_type": "WarningMessage",
         "category": "UserWarning",
         "when": "runtest",
         "message": "message",
