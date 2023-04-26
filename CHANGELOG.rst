@@ -1,3 +1,9 @@
+0.3.0 (2023-04-26)
+------------------
+
+* `#20 <https://github.com/pytest-dev/pytest-reportlog/issues/20>`_: Warnings are now included in the logs.
+
+
 0.2.1 (2023-03-11)
 ------------------
 
