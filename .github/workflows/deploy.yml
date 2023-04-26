@@ -36,4 +36,4 @@ jobs:
 
     - uses: actions-ecosystem/action-push-tag@v1
       with:
-        tag: v${{ github.event.inputs.version }}
+        tag: ${{ github.event.inputs.version }}
