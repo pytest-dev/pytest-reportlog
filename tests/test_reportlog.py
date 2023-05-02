@@ -6,7 +6,7 @@ import pytest
 from pathlib import Path
 from _pytest.reports import BaseReport
 
-from pytest_reportlog.plugin import cleanup_unserializable, _open_filtered_writer
+from pytest_reportlog.plugin import _open_filtered_writer, unserializable_to_marked_str
 
 from typing_extensions import Protocol, Literal
 
@@ -133,10 +133,12 @@ def test_xdist_integration(testdir, tmp_path):
     }
 
 
-def test_cleanup_unserializable():
+def test_unserializable_to_marked():
     """Unittest for the cleanup_unserializable function"""
+
+
     good = {"x": 1, "y": ["a", "b"]}
-    new = cleanup_unserializable(good)
+    new = json.loads(json.dumps(good, default=unserializable_to_marked_str))
     assert new == good
 
     class C:
@@ -144,5 +146,5 @@ def test_cleanup_unserializable():
             return "C instance"
 
     bad = {"x": 1, "y": ["a", "b"], "c": C()}
-    new = cleanup_unserializable(bad)
-    assert new == {"x": 1, "c": "C instance", "y": ["a", "b"]}
+    new_bad = json.loads(json.dumps(bad, default=unserializable_to_marked_str))
+    assert new_bad == {**bad, "c": {"$no-json": "C instance"}}

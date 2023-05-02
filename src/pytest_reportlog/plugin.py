@@ -63,11 +63,7 @@ class ReportLogPlugin:
             self._file = None
 
     def _write_json_data(self, data):
-        try:
-            json_data = json.dumps(data)
-        except TypeError:
-            data = cleanup_unserializable(data)
-            json_data = json.dumps(data)
+        json_data = json.dumps(data, default=unserializable_to_marked_str)
         self._file.write(json_data + "\n")
         self._file.flush()
 
@@ -92,7 +88,7 @@ class ReportLogPlugin:
             ),
             "filename": warning_message.filename,
             "lineno": warning_message.lineno,
-            "message": warning_message.message,
+            "message": str(warning_message.message),
         }
         extra_data = {
             "$report_type": "WarningMessage",
@@ -112,13 +108,6 @@ class ReportLogPlugin:
         terminalreporter.write_sep("-", f"generated report log file: {self._log_path}")
 
 
-def cleanup_unserializable(d: Dict[str, Any]) -> Dict[str, Any]:
-    """Return new dict with entries that are not json serializable by their str()."""
-    result = {}
-    for k, v in d.items():
-        try:
-            json.dumps({k: v})
-        except TypeError:
-            v = str(v)
-        result[k] = v
-    return result
+def unserializable_to_marked_str(obj: object) -> Dict[str, str]:
+    """for a object that json can not serialize. return {"$no-json": str(obj)}"""
+    return { "$no-json": str(obj)}
