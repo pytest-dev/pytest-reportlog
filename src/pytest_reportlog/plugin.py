@@ -1,5 +1,5 @@
 import json
-from typing import Dict, Any
+from typing import Dict, Any, TextIO
 
 from _pytest.pathlib import Path
 
@@ -31,13 +31,31 @@ def pytest_unconfigure(config):
         del config._report_log_plugin
 
 
+def _open_filtered_writer(log_path: Path) -> TextIO:
+    if log_path.suffix == ".gz":
+        import gzip
+
+        return gzip.open(log_path, "wt", encoding="UTF-8")
+    elif log_path.suffix == ".bz2":
+        import bz2
+
+        return bz2.open(log_path, "wt", encoding="UTF-8")
+    elif log_path.suffix == ".xz":
+        import lzma
+
+        return lzma.open(log_path, "wt", encoding="UTF-8")
+    else:
+        # line buffer for text mode to ease tail -f
+        return log_path.open("wt", buffering=1, encoding="UTF-8")
+
+
 class ReportLogPlugin:
     def __init__(self, config, log_path: Path):
         self._config = config
         self._log_path = log_path
 
         log_path.parent.mkdir(parents=True, exist_ok=True)
-        self._file = log_path.open("w", buffering=1, encoding="UTF-8")
+        self._file = _open_filtered_writer(log_path)
 
     def close(self):
         if self._file is not None:
