@@ -20,6 +20,7 @@ class OpenerModule(Protocol):
     "filename, opener_module",
     [
         ("test.jsonl", io),
+        ("test.unknown", io),
         ("test.jsonl.gz", gzip),
         ("test.jsonl.bz2", bz2),
         ("test.jsonl.xz", lzma),
