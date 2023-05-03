@@ -47,7 +47,7 @@ Compression
 ===========
 
 Common compression suffixes like `.gz`, `.bz2` and `.xz` will automatically use the requested compression format.
-The implementations from the python stdlib are used and mist be enabled in the python builds.
+The implementations from the python stdlib are used and must be enabled in the python builds.
 
 Example
 -------
