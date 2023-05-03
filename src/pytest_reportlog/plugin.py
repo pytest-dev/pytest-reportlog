@@ -110,4 +110,4 @@ class ReportLogPlugin:
 
 def unserializable_to_marked_str(obj: object) -> Dict[str, str]:
     """for a object that json can not serialize. return {"$no-json": str(obj)}"""
-    return { "$no-json": str(obj)}
+    return {"$no-json": str(obj)}

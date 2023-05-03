@@ -136,7 +136,6 @@ def test_xdist_integration(testdir, tmp_path):
 def test_unserializable_to_marked():
     """Unittest for the cleanup_unserializable function"""
 
-
     good = {"x": 1, "y": ["a", "b"]}
     new = json.loads(json.dumps(good, default=unserializable_to_marked_str))
     assert new == good
