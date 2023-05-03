@@ -32,7 +32,7 @@ Usage
 
 Install ``pytest-reportlog`` as a test requirement in your test environment.
 
-The ``--report-log=FILE`` option writes *report logs* into a file as the test session executes.
+The ``--report-log=FILE`` option writes a file in `JSON lines <https://jsonlines.org/>`__ format as the test session executes.
 
 Each line of the report log contains a self contained JSON object corresponding to a testing event,
 such as a collection or a test result report. The file is guaranteed to be flushed after writing
