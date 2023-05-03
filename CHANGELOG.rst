@@ -1,3 +1,9 @@
+next (tbd)
+-------------------
+
+* `#16 <https://github.com/pytest-dev/pytest-reportlog/issues/15>`_: switch recommended file extension to `jsonl <https://jsonlines.org/>`__.
+
+
 0.3.0 (2023-04-26)
 ------------------
 

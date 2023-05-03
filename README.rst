@@ -32,7 +32,7 @@ Usage
 
 Install ``pytest-reportlog`` as a test requirement in your test environment.
 
-The ``--report-log=FILE`` option writes *report logs* into a file as the test session executes.
+The ``--report-log=FILE`` option writes a file in `JSON lines <https://jsonlines.org/>`__ format as the test session executes.
 
 Each line of the report log contains a self contained JSON object corresponding to a testing event,
 such as a collection or a test result report. The file is guaranteed to be flushed after writing
@@ -64,7 +64,7 @@ Consider this file:
 
 ::
 
-    $ pytest test_report_example.py -q --report-log=log.json
+    $ pytest test_report_example.py -q --report-log=log.jsonl
     .F                                                                   [100%]
     ================================= FAILURES =================================
     ________________________________ test_fail _________________________________
@@ -77,11 +77,11 @@ Consider this file:
     ------------------- generated report log file: log.json --------------------
     1 failed, 1 passed in 0.12s
 
-The generated ``log.json`` will contain a JSON object per line:
+The generated ``log.jsonl`` will contain a JSON object per line:
 
 ::
 
-    $ cat log.json
+    $ cat log.jsonl
     {"pytest_version": "5.2.2", "$report_type": "SessionStart"}
     {"nodeid": "", "outcome": "passed", "longrepr": null, "result": null, "sections": [], "$report_type": "CollectReport"}
     {"nodeid": "test_report_example.py", "outcome": "passed", "longrepr": null, "result": null, "sections": [], "$report_type": "CollectReport"}
@@ -113,11 +113,3 @@ This information will be recorded in the report JSON objects under the ``user_pr
 
 Note that this nested list construct is just the JSON representation
 of a list of tuples (name-value pairs).
-
-
-License
-=======
-
-Distributed under the terms of the `MIT`_ license.
-
-.. _MIT: https://github.com/pytest-dev/pytest-mock/blob/master/LICENSE
