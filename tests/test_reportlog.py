@@ -1,10 +1,37 @@
 import json
 from collections import defaultdict
-
+from typing import TextIO
+import bz2, gzip, lzma, io
 import pytest
+from pathlib import Path
 from _pytest.reports import BaseReport
 
-from pytest_reportlog.plugin import cleanup_unserializable
+from pytest_reportlog.plugin import cleanup_unserializable, _open_filtered_writer
+
+from typing_extensions import Protocol, Literal
+
+
+class OpenerModule(Protocol):
+    def open(self, path: Path, mode: Literal["rt"]) -> TextIO:
+        ...
+
+
+@pytest.mark.parametrize(
+    "filename, opener_module",
+    [
+        ("test.jsonl", io),
+        ("test.unknown", io),
+        ("test.jsonl.gz", gzip),
+        ("test.jsonl.bz2", bz2),
+        ("test.jsonl.xz", lzma),
+    ],
+)
+def test_open_filtered(filename: str, opener_module: OpenerModule, tmp_path: Path):
+    path = tmp_path / filename
+    with _open_filtered_writer(path) as fp:
+        fp.write("test\n")
+    with opener_module.open(path, "rt") as fp2:
+        assert fp2.read() == "test\n"
 
 
 def test_basics(testdir, tmp_path, pytestconfig):

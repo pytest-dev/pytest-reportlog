@@ -43,6 +43,11 @@ that kind of report object. For future compatibility, consumers of the file shou
 they don't recognize, as well as ignore unknown properties/keys in JSON objects that they do know,
 as future pytest versions might enrich the objects with more properties/keys.
 
+Compression
+===========
+
+Common compression suffixes like `.gz`, `.bz2` and `.xz` will automatically use the requested compression format.
+The implementations from the python stdlib are used and must be enabled in the python builds.
 
 Example
 -------
