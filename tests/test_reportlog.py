@@ -105,6 +105,44 @@ def test_basics(testdir, tmp_path, pytestconfig):
         assert isinstance(rep, BaseReport)
 
 
+@pytest.mark.parametrize(
+    "exclude", [True, False], ids=["exclude on pass", "include logs on pass"]
+)
+def test_exclude_logs_for_passing_tests(testdir, tmp_path, exclude):
+    passing_log_entry = "THIS TEST PASSED!"
+    failing_log_entry = "THIS TEST FAILED!"
+    testdir.makepyfile(
+        f"""
+        import logging
+
+        logger = logging.getLogger(__name__)
+
+        def test_ok():
+            logger.warning("{passing_log_entry}")
+
+        def test_fail():
+            logger.warning("{failing_log_entry}")
+            assert 0
+        """
+    )
+    fn = tmp_path / "result.log"
+    if exclude:
+        result = testdir.runpytest(
+            f"--report-log={fn}", "--report-log-exclude-logs-on-passed-tests"
+        )
+    else:
+        result = testdir.runpytest(f"--report-log={fn}")
+    result.stdout.fnmatch_lines("*1 failed, 1 passed*")
+
+    log = fn.read_text("UTF-8")
+    if exclude:
+        assert log.find(passing_log_entry) < 0
+        assert log.find(failing_log_entry) >= 0
+    else:
+        assert log.find(passing_log_entry) >= 0
+        assert log.find(failing_log_entry) >= 0
+
+
 def test_xdist_integration(testdir, tmp_path):
     pytest.importorskip("xdist")
     testdir.makepyfile(
