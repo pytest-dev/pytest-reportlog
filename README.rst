@@ -79,7 +79,7 @@ Consider this file:
     E       assert (4 + 4) == 1
 
     test_report_example.py:8: AssertionError
-    ------------------- generated report log file: log.json --------------------
+    ------------------- generated report log file: log.jsonl --------------------
     1 failed, 1 passed in 0.12s
 
 The generated ``log.jsonl`` will contain a JSON object per line:
