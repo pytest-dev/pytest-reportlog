@@ -136,11 +136,10 @@ def test_exclude_logs_for_passing_tests(testdir, tmp_path, exclude):
 
     log = fn.read_text("UTF-8")
     if exclude:
-        assert log.find(passing_log_entry) < 0
-        assert log.find(failing_log_entry) >= 0
+        assert passing_log_entry not in log        
     else:
-        assert log.find(passing_log_entry) >= 0
-        assert log.find(failing_log_entry) >= 0
+        assert passing_log_entry in log
+    assert failing_log_entry in log
 
 
 def test_xdist_integration(testdir, tmp_path):
