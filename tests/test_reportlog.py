@@ -136,7 +136,7 @@ def test_exclude_logs_for_passing_tests(testdir, tmp_path, exclude):
 
     log = fn.read_text("UTF-8")
     if exclude:
-        assert passing_log_entry not in log        
+        assert passing_log_entry not in log
     else:
         assert passing_log_entry in log
     assert failing_log_entry in log
