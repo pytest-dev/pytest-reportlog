@@ -3,6 +3,7 @@ Next (tbd)
 
 * `#16 <https://github.com/pytest-dev/pytest-reportlog/issues/15>`_: switch recommended file extension to `jsonl <https://jsonlines.org/>`__.
 * `#17 <https://github.com/pytest-dev/pytest-reportlog/issues/17>`_: add compression support for ``.bz2``/``.gz``/``.xz`` log file extensions.
+* `#12 <https://github.com/pytest-dev/pytest-reportlog/issues/12>`_: handle unserializable objects with a pinpointed marker
 
 
 0.3.0 (2023-04-26)
