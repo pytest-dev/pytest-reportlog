@@ -104,3 +104,6 @@ venv.bak/
 .mypy_cache/
 
 src/pytest_reportlog/_version.py
+
+# PyCharm
+.idea/
