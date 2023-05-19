@@ -15,6 +15,12 @@ def pytest_addoption(parser):
         default=None,
         help="Path to line-based json objects of test session events.",
     )
+    group.addoption(
+        "--report-log-exclude-logs-on-passed-tests",
+        action="store_true",
+        default=False,
+        help="Don't capture logs for passing tests",
+    )
 
 
 def pytest_configure(config):
@@ -83,6 +89,21 @@ class ReportLogPlugin:
         data = self._config.hook.pytest_report_to_serializable(
             config=self._config, report=report
         )
+        if (
+            self._config.option.report_log_exclude_logs_on_passed_tests
+            and data.get("outcome", "") == "passed"
+        ):
+            data["sections"] = [
+                s
+                for s in data["sections"]
+                if s[0]
+                not in [
+                    "Captured log setup",
+                    "Captured log call",
+                    "Captured log teardown",
+                ]
+            ]
+
         self._write_json_data(data)
 
     def pytest_warning_recorded(self, warning_message, when, nodeid, location):
