@@ -12,8 +12,7 @@ from typing_extensions import Protocol, Literal
 
 
 class OpenerModule(Protocol):
-    def open(self, path: Path, mode: Literal["rt"]) -> TextIO:
-        ...
+    def open(self, path: Path, mode: Literal["rt"]) -> TextIO: ...
 
 
 @pytest.mark.parametrize(
@@ -62,7 +61,11 @@ def test_basics(testdir, tmp_path, pytestconfig):
     result.stdout.fnmatch_lines([f"* generated report log file: {log_file}*"])
 
     json_objs = [json.loads(x) for x in log_file.read_text().splitlines()]
-    assert len(json_objs) == 14
+    if pytest.version_tuple[0] < 8:
+        assert len(json_objs) == 14
+    else:
+        # In pytest 8 it produces an extra CollectReport for the extra pytest.Directory being collected.
+        assert len(json_objs) == 15
 
     # first line should be the session_start
     session_start = json_objs[0]
