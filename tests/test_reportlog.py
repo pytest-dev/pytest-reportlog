@@ -12,8 +12,7 @@ from typing_extensions import Protocol, Literal
 
 
 class OpenerModule(Protocol):
-    def open(self, path: Path, mode: Literal["rt"]) -> TextIO:
-        ...
+    def open(self, path: Path, mode: Literal["rt"]) -> TextIO: ...
 
 
 @pytest.mark.parametrize(
