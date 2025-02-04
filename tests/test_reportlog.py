@@ -8,7 +8,7 @@ from _pytest.reports import BaseReport
 
 from pytest_reportlog.plugin import cleanup_unserializable, _open_filtered_writer
 
-from typing_extensions import Protocol, Literal
+from typing import Protocol, Literal
 
 
 class OpenerModule(Protocol):
