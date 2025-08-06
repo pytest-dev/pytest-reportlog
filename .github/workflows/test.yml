@@ -21,7 +21,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build and Check Package
-      uses: hynek/build-and-inspect-python-package@v2.8.0
+      uses: hynek/build-and-inspect-python-package@v2.13.0
 
   test:
     needs: [package]
