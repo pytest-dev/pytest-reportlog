@@ -89,6 +89,11 @@ class ReportLogPlugin:
         data = self._config.hook.pytest_report_to_serializable(
             config=self._config, report=report
         )
+
+        # Workaround for subtests that output `_report_type` instead of `$report_type` (#90).
+        if "_report_type" in data:
+            data["$report_type"] = data.pop("_report_type")
+
         if (
             self._config.option.report_log_exclude_logs_on_passed_tests
             and data.get("outcome", "") == "passed"
