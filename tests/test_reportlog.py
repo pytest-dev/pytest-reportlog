@@ -186,3 +186,21 @@ def test_cleanup_unserializable():
     bad = {"x": 1, "y": ["a", "b"], "c": C()}
     new = cleanup_unserializable(bad)
     assert new == {"x": 1, "c": "C instance", "y": ["a", "b"]}
+
+
+def test_subtest(pytester, tmp_path):
+    """Regression test for #90."""
+    pytester.makepyfile(
+        """
+        def test_foo(subtests):
+            with subtests.test():
+                pass
+    """
+    )
+    fn = tmp_path / "result.log"
+    result = pytester.runpytest(f"--report-log={fn}")
+    result.stdout.fnmatch_lines("*1 passed in*")
+    lines = fn.read_text("UTF-8").splitlines()
+    for line in lines:
+        data = json.loads(line)
+        assert "$report_type" in data

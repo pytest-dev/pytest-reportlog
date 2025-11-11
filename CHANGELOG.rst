@@ -1,8 +1,9 @@
 UNRELEASED
 ----------
 
-* Added official support for Python 3.12 and 3.13.
-* Dropped support for EOL Python 3.7 and Python 3.8.
+* `#90 <https://github.com/pytest-dev/pytest-reportlog/issues/90>`_: Fix jsonl output for pytest subtests (introduced in pytest 9.0).
+* Added official support for Python 3.12, 3.13, and 3.14.
+* Dropped support for EOL Python 3.7, 3.8, and 3.9.
 
 0.4.0 (2023-05-22)
 ------------------
