@@ -1,5 +1,5 @@
-UNRELEASED
-----------
+1.0.0 (2025-11-11)
+------------------
 
 * `#90 <https://github.com/pytest-dev/pytest-reportlog/issues/90>`_: Fix jsonl output for pytest subtests (introduced in pytest 9.0).
 * Added official support for Python 3.12, 3.13, and 3.14.
