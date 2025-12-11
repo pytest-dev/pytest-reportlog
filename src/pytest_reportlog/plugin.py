@@ -106,6 +106,12 @@ class ReportLogPlugin:
                     "Captured log setup",
                     "Captured log call",
                     "Captured log teardown",
+                    "Captured stderr setup",
+                    "Captured stderr call",
+                    "Captured stderr teardown",
+                    "Captured stdout setup",
+                    "Captured stdout call",
+                    "Captured stdout teardown",
                 ]
             ]
 
