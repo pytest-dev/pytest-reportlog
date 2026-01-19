@@ -39,8 +39,7 @@ def test_basics(testdir, tmp_path, pytestconfig):
     We don't test the test reports extensively because they have been
     tested already in ``test_reports``.
     """
-    p = testdir.makepyfile(
-        """
+    p = testdir.makepyfile("""
         import warnings
 
         def test_ok():
@@ -51,8 +50,7 @@ def test_basics(testdir, tmp_path, pytestconfig):
 
         def test_warning():
             warnings.warn("message", UserWarning)
-        """
-    )
+        """)
 
     log_file = tmp_path / "log.json"
 
@@ -114,8 +112,7 @@ def test_basics(testdir, tmp_path, pytestconfig):
 def test_exclude_logs_for_passing_tests(testdir, tmp_path, exclude):
     passing_log_entry = "THIS TEST PASSED!"
     failing_log_entry = "THIS TEST FAILED!"
-    testdir.makepyfile(
-        f"""
+    testdir.makepyfile(f"""
         import logging
 
         logger = logging.getLogger(__name__)
@@ -126,8 +123,7 @@ def test_exclude_logs_for_passing_tests(testdir, tmp_path, exclude):
         def test_fail():
             logger.warning("{failing_log_entry}")
             assert 0
-        """
-    )
+        """)
     fn = tmp_path / "result.log"
     if exclude:
         result = testdir.runpytest(
@@ -147,8 +143,7 @@ def test_exclude_logs_for_passing_tests(testdir, tmp_path, exclude):
 
 def test_xdist_integration(testdir, tmp_path):
     pytest.importorskip("xdist")
-    testdir.makepyfile(
-        """
+    testdir.makepyfile("""
         import warnings
 
         def test_ok():
@@ -159,8 +154,7 @@ def test_xdist_integration(testdir, tmp_path):
 
         def test_warning():
             warnings.warn("message", UserWarning)
-        """
-    )
+        """)
     fn = tmp_path / "result.log"
     result = testdir.runpytest("-n2", f"--report-log={fn}")
     result.stdout.fnmatch_lines("*1 failed, 2 passed, 1 warning*")
@@ -190,13 +184,11 @@ def test_cleanup_unserializable():
 
 def test_subtest(pytester, tmp_path):
     """Regression test for #90."""
-    pytester.makepyfile(
-        """
+    pytester.makepyfile("""
         def test_foo(subtests):
             with subtests.test():
                 pass
-    """
-    )
+    """)
     fn = tmp_path / "result.log"
     result = pytester.runpytest(f"--report-log={fn}")
     result.stdout.fnmatch_lines("*1 passed in*")
