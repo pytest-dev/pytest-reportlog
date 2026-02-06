@@ -212,14 +212,12 @@ def _contains_ansi_escape(obj) -> bool:
 
 
 def test_strips_ansi_escape_sequences(testdir, tmp_path):
-    testdir.makepyfile(
-        r"""
+    testdir.makepyfile(r"""
         import pytest
 
         def test_fail_with_ansi_message():
             pytest.fail("\x1b[31mRED\x1b[0m")
-        """
-    )
+        """)
     fn = tmp_path / "result.log"
     result = testdir.runpytest(f"--report-log={fn}")
     assert result.ret == pytest.ExitCode.TESTS_FAILED
