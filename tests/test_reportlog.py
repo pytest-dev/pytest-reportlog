@@ -184,6 +184,7 @@ def test_cleanup_unserializable():
 
 def test_subtest(pytester, tmp_path):
     """Regression test for #90."""
+    pytest.importorskip("pytest_subtests")
     pytester.makepyfile("""
         def test_foo(subtests):
             with subtests.test():
@@ -196,3 +197,33 @@ def test_subtest(pytester, tmp_path):
     for line in lines:
         data = json.loads(line)
         assert "$report_type" in data
+
+
+def _contains_ansi_escape(obj) -> bool:
+    if isinstance(obj, str):
+        return "\x1b" in obj
+    if isinstance(obj, dict):
+        return any(
+            _contains_ansi_escape(k) or _contains_ansi_escape(v) for k, v in obj.items()
+        )
+    if isinstance(obj, (list, tuple)):
+        return any(_contains_ansi_escape(v) for v in obj)
+    return False
+
+
+def test_strips_ansi_escape_sequences(testdir, tmp_path):
+    testdir.makepyfile(
+        r"""
+        import pytest
+
+        def test_fail_with_ansi_message():
+            pytest.fail("\x1b[31mRED\x1b[0m")
+        """
+    )
+    fn = tmp_path / "result.log"
+    result = testdir.runpytest(f"--report-log={fn}")
+    assert result.ret == pytest.ExitCode.TESTS_FAILED
+
+    for line in fn.read_text("UTF-8").splitlines():
+        data = json.loads(line)
+        assert not _contains_ansi_escape(data)
