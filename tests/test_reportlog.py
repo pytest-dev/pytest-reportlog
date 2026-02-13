@@ -200,8 +200,7 @@ def test_subtest(pytester, tmp_path):
 
 
 def test_strips_ansi_escape_sequences(testdir, tmp_path):
-    testdir.makeconftest(
-        r"""
+    testdir.makeconftest(r"""
 def pytest_report_to_serializable(config, report):
     data = {
         "$report_type": "TestReport",
@@ -214,8 +213,7 @@ def pytest_report_to_serializable(config, report):
         data["sections"] = [("Captured stdout call", "\x1b[32mGREEN\x1b[0m")]
 
     return data
-"""
-    )
+""")
     testdir.makepyfile("""
         def test_fail():
             assert 0
