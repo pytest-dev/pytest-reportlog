@@ -139,12 +139,23 @@ class ReportLogPlugin:
 
 
 def cleanup_unserializable(d: Dict[str, Any]) -> Dict[str, Any]:
-    """Return new dict with entries that are not json serializable by their str()."""
-    result = {}
-    for k, v in d.items():
+    """Return new dict with values converted to JSON-safe representations."""
+
+    def to_jsonable(value: Any) -> Any:
         try:
-            json.dumps({k: v})
-        except TypeError:
-            v = str(v)
-        result[k] = v
-    return result
+            json.dumps(value)
+        except (TypeError, ValueError):
+            pass
+        else:
+            return value
+
+        if isinstance(value, dict):
+            return {str(k): to_jsonable(v) for k, v in value.items()}
+        if isinstance(value, (list, tuple)):
+            return [to_jsonable(v) for v in value]
+        if isinstance(value, set):
+            return [to_jsonable(v) for v in sorted(value, key=str)]
+
+        return str(value)
+
+    return {str(k): to_jsonable(v) for k, v in d.items()}
