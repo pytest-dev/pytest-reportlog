@@ -19,7 +19,7 @@ jobs:
     - uses: actions/checkout@v6
 
     - name: Build and Check Package
-      uses: hynek/build-and-inspect-python-package@v2.14.0
+      uses: hynek/build-and-inspect-python-package@v2.15.0
 
   deploy:
     needs: package
@@ -33,7 +33,7 @@ jobs:
     - uses: actions/checkout@v6
 
     - name: Download Package
-      uses: actions/download-artifact@v7.0.0
+      uses: actions/download-artifact@v8.0.1
       with:
         name: Packages
         path: dist
