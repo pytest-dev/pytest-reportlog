@@ -184,6 +184,7 @@ def test_cleanup_unserializable():
 
 def test_subtest(pytester, tmp_path):
     """Regression test for #90."""
+    pytest.importorskip("pytest_subtests")
     pytester.makepyfile("""
         def test_foo(subtests):
             with subtests.test():
@@ -196,3 +197,36 @@ def test_subtest(pytester, tmp_path):
     for line in lines:
         data = json.loads(line)
         assert "$report_type" in data
+
+
+def test_strips_ansi_escape_sequences(testdir, tmp_path):
+    testdir.makeconftest(r"""
+def pytest_report_to_serializable(config, report):
+    data = {
+        "$report_type": "TestReport",
+        "nodeid": report.nodeid,
+        "outcome": report.outcome,
+    }
+
+    if getattr(report, "when", None) == "call":
+        data["longreprtext"] = "\x1b[31mRED\x1b[0m"
+        data["sections"] = [("Captured stdout call", "\x1b[32mGREEN\x1b[0m")]
+
+    return data
+""")
+    testdir.makepyfile("""
+        def test_fail():
+            assert 0
+    """)
+
+    log_file = tmp_path / "log.json"
+    result = testdir.runpytest("--report-log", str(log_file))
+    assert result.ret == pytest.ExitCode.TESTS_FAILED
+
+    json_objs = [json.loads(x) for x in log_file.read_text().splitlines()]
+    report = next(obj for obj in json_objs if obj.get("longreprtext"))
+
+    assert report["longreprtext"] == "RED"
+    assert "\x1b" not in report["longreprtext"]
+    assert report["sections"][0][1] == "GREEN"
+    assert "\x1b" not in report["sections"][0][1]
