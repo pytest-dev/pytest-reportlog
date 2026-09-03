@@ -1,9 +1,24 @@
 import json
+import re
 from typing import Dict, Any, TextIO
 
 from _pytest.pathlib import Path
 
 import pytest
+
+_ANSI_ESCAPE_RE = re.compile(r"\x1b(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
+
+
+def _strip_ansi(obj: Any) -> Any:
+    if isinstance(obj, str):
+        return _ANSI_ESCAPE_RE.sub("", obj)
+    if isinstance(obj, dict):
+        return {_strip_ansi(k): _strip_ansi(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_strip_ansi(v) for v in obj]
+    if isinstance(obj, tuple):
+        return tuple(_strip_ansi(v) for v in obj)
+    return obj
 
 
 def pytest_addoption(parser):
@@ -69,10 +84,12 @@ class ReportLogPlugin:
             self._file = None
 
     def _write_json_data(self, data):
+        data = _strip_ansi(data)
         try:
             json_data = json.dumps(data)
         except TypeError:
             data = cleanup_unserializable(data)
+            data = _strip_ansi(data)
             json_data = json.dumps(data)
         self._file.write(json_data + "\n")
         self._file.flush()
