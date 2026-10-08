@@ -1,9 +1,12 @@
 import json
+import re
 from typing import Dict, Any, TextIO
 
 from _pytest.pathlib import Path
 
 import pytest
+
+_ANSI_ESCAPE_SEQUENCE_RE = re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]")
 
 
 def pytest_addoption(parser):
@@ -69,10 +72,12 @@ class ReportLogPlugin:
             self._file = None
 
     def _write_json_data(self, data):
+        data = _strip_ansi_escape_sequences(data)
         try:
             json_data = json.dumps(data)
         except TypeError:
             data = cleanup_unserializable(data)
+            data = _strip_ansi_escape_sequences(data)
             json_data = json.dumps(data)
         self._file.write(json_data + "\n")
         self._file.flush()
@@ -148,3 +153,21 @@ def cleanup_unserializable(d: Dict[str, Any]) -> Dict[str, Any]:
             v = str(v)
         result[k] = v
     return result
+
+
+def _strip_ansi_escape_sequences(value: Any) -> Any:
+    """
+    Return a new value with ANSI escape sequences removed from any strings.
+
+    Report log output is intended to be machine-readable, and ANSI codes can
+    appear in pytest's formatted output (e.g. colored diffs).
+    """
+    if isinstance(value, str):
+        return _ANSI_ESCAPE_SEQUENCE_RE.sub("", value)
+    if isinstance(value, dict):
+        return {k: _strip_ansi_escape_sequences(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [_strip_ansi_escape_sequences(v) for v in value]
+    if isinstance(value, tuple):
+        return tuple(_strip_ansi_escape_sequences(v) for v in value)
+    return value
