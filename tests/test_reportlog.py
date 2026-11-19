@@ -182,8 +182,23 @@ def test_cleanup_unserializable():
     assert new == {"x": 1, "c": "C instance", "y": ["a", "b"]}
 
 
+def test_cleanup_unserializable_does_not_stringify_entire_user_properties():
+    """
+    Regression test for #12.
+
+    If a single user property value is not JSON-serializable (e.g. a set), we
+    should only sanitize that value instead of stringifying the entire
+    user_properties payload.
+    """
+    data = {"user_properties": [("hello", {"world", "mars"})]}
+    new = cleanup_unserializable(data)
+
+    assert new == {"user_properties": [["hello", ["mars", "world"]]]}
+
+
 def test_subtest(pytester, tmp_path):
     """Regression test for #90."""
+    pytest.importorskip("pytest_subtests")
     pytester.makepyfile("""
         def test_foo(subtests):
             with subtests.test():
