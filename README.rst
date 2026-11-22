@@ -43,6 +43,17 @@ that kind of report object. For future compatibility, consumers of the file shou
 they don't recognize, as well as ignore unknown properties/keys in JSON objects that they do know,
 as future pytest versions might enrich the objects with more properties/keys.
 
+pytest-reportlog writes `TestReport`_ and `CollectReport`_ records using pytest's
+`pytest_report_to_serializable`_ hook. pytest-reportlog itself emits the
+``SessionStart``, ``SessionFinish``, and ``WarningMessage`` JSON records.
+Ordinary pytest report outcomes are ``passed``, ``failed``, and ``skipped``.
+Installed plugins may supply other outcomes or records. Use the generated
+report log from your pytest run as a reference for the records you receive.
+
+.. _TestReport: https://docs.pytest.org/en/stable/reference/reference.html#pytest.TestReport
+.. _CollectReport: https://docs.pytest.org/en/stable/reference/reference.html#pytest.CollectReport
+.. _pytest_report_to_serializable: https://docs.pytest.org/en/stable/reference/reference.html#pytest.hookspec.pytest_report_to_serializable
+
 Compression
 ===========
 
